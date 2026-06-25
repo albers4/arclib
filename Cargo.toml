@@ -1,0 +1,21 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/ir",
+    "crates/compiler",
+    "python",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "LGPL-2.1+"
+
+[workspace.dependencies]
+uuid = { version = "1", features = ["v4"] }
+slotmap = { version = "1.1" }
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3

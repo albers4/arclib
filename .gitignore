@@ -1,0 +1,29 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyd
+.pytest_cache/
+*.so
+docs/build/
+*.benchmarks
+.ruff_cache/
+
+# Rust
+target/
+!crates/compiler/src/target/
+Cargo.lock
+build/
+
+# Maturin / Build
+dist/
+
+# git
+*~
+*.un~
+*.swp
+*.swo
+*.swn
+
+# IDE
+.vscode/
