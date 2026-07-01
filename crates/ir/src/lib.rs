@@ -54,8 +54,8 @@ pub use dialect::{
     BranchOpInterface, ConstantLike, DialectDescriptor, DialectRegistry, DialectRegistryError,
     InterfaceMap, IsolatedFromAbove, OperationDescriptor, OperationVerifier, Pure,
     RegionBranchOpInterface, RegionBranchPoint, RegionBranchSuccessor,
-    RegionBranchTerminatorInterface, Terminator, UnknownOperationPolicy, VerifyInterface,
-    register_builtin_dialect,
+    RegionBranchTerminatorInterface, Terminator, UNREALIZED_CAST, UnknownOperationPolicy,
+    VerifyInterface, register_builtin_dialect,
 };
 
 pub use rewrite::{

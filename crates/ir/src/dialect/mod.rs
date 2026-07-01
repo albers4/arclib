@@ -10,7 +10,7 @@ mod interface;
 mod registry;
 mod traits;
 
-pub use builtin::register_builtin_dialect;
+pub use builtin::{UNREALIZED_CAST, register_builtin_dialect};
 
 pub use descriptor::OperationDescriptor;
 
