@@ -1,0 +1,9 @@
+[package]
+name = "equation"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+compiler = { path = "../compiler" }
+ir = { path = "../ir" }
