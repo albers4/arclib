@@ -9,21 +9,17 @@ mod resource;
 
 pub mod memory;
 
-pub use command::{
-    BufferCopy, BufferFill, ExecutionCommand, KernelInvocation,
-};
+pub use command::{BufferCopy, BufferFill, ExecutionCommand, KernelInvocation};
 pub use error::{ExecutionError, ExecutionPlanError};
 pub use graph::{
-    ExecutionGraph, ExecutionGraphBuilder, ExecutionNode, ExecutionNodeId,
-    ExecutionSchedule,
+    ExecutionGraph, ExecutionGraphBuilder, ExecutionNode, ExecutionNodeId, ExecutionSchedule,
 };
 pub use memory::{
-    BufferLifetime, BufferRequest, BufferSpec, MemoryPlan, MemoryPlanningError,
-    MemorySlot, MemorySlotId, plan_execution_graph_memory,
-    plan_execution_schedule_memory, plan_memory,
+    BufferLifetime, BufferRequest, BufferSpec, MemoryPlan, MemoryPlanningError, MemorySlot,
+    MemorySlotId, plan_execution_graph_memory, plan_execution_schedule_memory, plan_memory,
 };
 pub use plan::ExecutionPlan;
 pub use resource::{
-    BufferDeclaration, BufferProvision, MemorySpace, ResourceDeclaration,
-    ResourceId, ResourceTable, ScalarValue,
+    BufferDeclaration, BufferProvision, MemorySpace, ResourceDeclaration, ResourceId,
+    ResourceTable, ScalarValue,
 };

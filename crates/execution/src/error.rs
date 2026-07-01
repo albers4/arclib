@@ -52,7 +52,10 @@ impl fmt::Display for ExecutionError {
                 "kernel '{kernel}' expects {expected} arguments but received {actual}"
             ),
             Self::InvalidByteCount { command, bytes } => {
-                write!(formatter, "{command} requires a positive byte count, got {bytes}")
+                write!(
+                    formatter,
+                    "{command} requires a positive byte count, got {bytes}"
+                )
             }
             Self::MissingDependency { node, dependency } => write!(
                 formatter,

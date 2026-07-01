@@ -3,41 +3,20 @@
 
 use std::sync::Arc;
 
-
-#[derive(
-    Debug,
-    Clone,
-    Copy,
-    PartialEq,
-    Eq,
-    Hash,
-)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum KernelValueKind {
     Buffer,
     Scalar,
 }
 
-#[derive(
-    Debug,
-    Clone,
-    Copy,
-    PartialEq,
-    Eq,
-    Hash,
-)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum KernelAccess {
     Read,
     Write,
     ReadWrite,
 }
 
-
-#[derive(
-    Debug,
-    Clone,
-    PartialEq,
-    Eq,
-)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct KernelParameter {
     name: Arc<str>,
     kind: KernelValueKind,
@@ -45,16 +24,9 @@ pub struct KernelParameter {
 }
 
 impl KernelParameter {
-    pub fn new(
-        name: impl AsRef<str>,
-        kind: KernelValueKind,
-        access: KernelAccess,
-    ) -> Self {
+    pub fn new(name: impl AsRef<str>, kind: KernelValueKind, access: KernelAccess) -> Self {
         Self {
-            name:
-                Arc::from(
-                    name.as_ref(),
-                ),
+            name: Arc::from(name.as_ref()),
 
             kind,
             access,
@@ -65,32 +37,19 @@ impl KernelParameter {
         &self.name
     }
 
-    pub fn kind(
-        &self,
-    ) -> KernelValueKind {
+    pub fn kind(&self) -> KernelValueKind {
         self.kind
     }
 
-    pub fn access(
-        &self,
-    ) -> KernelAccess {
+    pub fn access(&self) -> KernelAccess {
         self.access
     }
 }
 
-
-#[derive(
-    Debug,
-    Clone,
-    Default,
-    PartialEq,
-    Eq,
-)]
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct KernelAbi {
-    parameters:
-        Vec<KernelParameter>,
-    result_aliases:
-        Vec<usize>,
+    parameters: Vec<KernelParameter>,
+    result_aliases: Vec<usize>,
 }
 
 impl KernelAbi {
@@ -98,14 +57,8 @@ impl KernelAbi {
         Self::default()
     }
 
-    pub fn parameter(
-        mut self,
-        parameter:
-            KernelParameter,
-    ) -> Self {
-        self.parameters.push(
-            parameter,
-        );
+    pub fn parameter(mut self, parameter: KernelParameter) -> Self {
+        self.parameters.push(parameter);
 
         self
     }
@@ -114,26 +67,17 @@ impl KernelAbi {
     /// `kernel.call` aliases an ABI argument.
     ///
     /// Results are added in declaration order.
-    pub fn result_alias(
-        mut self,
-        parameter_index: usize,
-    ) -> Self {
-        self.result_aliases.push(
-            parameter_index,
-        );
+    pub fn result_alias(mut self, parameter_index: usize) -> Self {
+        self.result_aliases.push(parameter_index);
 
         self
     }
 
-    pub fn parameters(
-        &self,
-    ) -> &[KernelParameter] {
+    pub fn parameters(&self) -> &[KernelParameter] {
         &self.parameters
     }
 
-    pub fn result_aliases(
-        &self,
-    ) -> &[usize] {
+    pub fn result_aliases(&self) -> &[usize] {
         &self.result_aliases
     }
 }

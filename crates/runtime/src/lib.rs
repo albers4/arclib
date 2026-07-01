@@ -10,7 +10,7 @@ pub use error::{KernelRuntimeError, RuntimeError};
 pub use executor::LocalExecutor;
 pub use kernel::{LinkedKernelRuntime, PackedKernelFunction};
 pub use memory::{
-    AllocatorRegistry, BufferAllocation, BufferAllocator, BufferBinding,
-    CallbackAllocator, HostAllocator, ResourceStore, RuntimeResource,
-    materialize_execution_plan, materialize_memory_plan,
+    AllocatorRegistry, BufferAllocation, BufferAllocator, BufferBinding, CallbackAllocator,
+    HostAllocator, ResourceStore, RuntimeResource, materialize_execution_plan,
+    materialize_memory_plan,
 };

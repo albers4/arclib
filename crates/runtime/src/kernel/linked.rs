@@ -46,9 +46,11 @@ impl LinkedKernelRuntime {
         kernel: &str,
         arguments: &mut [*mut c_void],
     ) -> Result<(), KernelRuntimeError> {
-        let function = self.functions.get(kernel).copied().ok_or_else(|| {
-            KernelRuntimeError::MissingRuntimeFunction(kernel.to_owned())
-        })?;
+        let function = self
+            .functions
+            .get(kernel)
+            .copied()
+            .ok_or_else(|| KernelRuntimeError::MissingRuntimeFunction(kernel.to_owned()))?;
 
         let status = unsafe { function(arguments.as_ptr(), arguments.len()) };
         if status != 0 {

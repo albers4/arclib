@@ -5,11 +5,7 @@ use std::sync::Arc;
 
 use crate::{KernelAbi, KernelAccess, KernelArtifact, KernelBackend};
 
-
-#[derive(
-    Debug,
-    Clone,
-)]
+#[derive(Debug, Clone)]
 pub struct KernelDescriptor {
     name: Arc<str>,
     symbol: Arc<str>,
@@ -19,39 +15,22 @@ pub struct KernelDescriptor {
 }
 
 impl KernelDescriptor {
-    pub fn new(
-        name: impl AsRef<str>,
-        symbol: impl AsRef<str>,
-        backend: KernelBackend,
-    ) -> Self {
+    pub fn new(name: impl AsRef<str>, symbol: impl AsRef<str>, backend: KernelBackend) -> Self {
         Self {
-            name:
-                Arc::from(
-                    name.as_ref(),
-                ),
-            symbol:
-                Arc::from(
-                    symbol.as_ref(),
-                ),
+            name: Arc::from(name.as_ref()),
+            symbol: Arc::from(symbol.as_ref()),
             backend,
             artifact: KernelArtifact::LinkedSymbol,
             abi: KernelAbi::new(),
         }
     }
 
-    pub fn with_artifact(
-        mut self,
-        artifact:
-            KernelArtifact,
-    ) -> Self {
+    pub fn with_artifact(mut self, artifact: KernelArtifact) -> Self {
         self.artifact = artifact;
         self
     }
 
-    pub fn with_abi(
-        mut self,
-        abi: KernelAbi,
-    ) -> Self {
+    pub fn with_abi(mut self, abi: KernelAbi) -> Self {
         self.abi = abi;
         self
     }
@@ -64,15 +43,11 @@ impl KernelDescriptor {
         &self.symbol
     }
 
-    pub fn backend(
-        &self,
-    ) -> KernelBackend {
+    pub fn backend(&self) -> KernelBackend {
         self.backend
     }
 
-    pub fn artifact(
-        &self,
-    ) -> &KernelArtifact {
+    pub fn artifact(&self) -> &KernelArtifact {
         &self.artifact
     }
 
@@ -80,57 +55,32 @@ impl KernelDescriptor {
         &self.abi
     }
 
-    pub fn validate(
-        &self,
-    ) -> Result<(), String> {
+    pub fn validate(&self) -> Result<(), String> {
         if self.name.is_empty() {
-            return Err(
-                "kernel name must not be empty"
-                    .into(),
-            );
+            return Err("kernel name must not be empty".into());
         }
 
         if self.symbol.is_empty() {
-            return Err(
-                "kernel symbol must not be empty"
-                    .into(),
-            );
+            return Err("kernel symbol must not be empty".into());
         }
 
-        for (
-            result_index,
-            parameter_index,
-        ) in self
-            .abi
-            .result_aliases()
-            .iter()
-            .copied()
-            .enumerate()
+        for (result_index, parameter_index) in self.abi.result_aliases().iter().copied().enumerate()
         {
-            let parameter =
-                self.abi
-                    .parameters()
-                    .get(parameter_index)
-                    .ok_or_else(|| {
-                        format!(
-                            "kernel result {result_index} \
+            let parameter = self.abi.parameters().get(parameter_index).ok_or_else(|| {
+                format!(
+                    "kernel result {result_index} \
                             aliases missing ABI parameter \
                             {parameter_index}"
-                        )
-                    })?;
+                )
+            })?;
 
-            if parameter.access()
-                == KernelAccess::Read
-            {
-                return Err(
-                    format!(
-                        "kernel result {result_index} \
+            if parameter.access() == KernelAccess::Read {
+                return Err(format!(
+                    "kernel result {result_index} \
                         aliases read-only parameter \
                         '{name}'",
-                        name =
-                            parameter.name(),
-                    ),
-                );
+                    name = parameter.name(),
+                ));
             }
         }
 

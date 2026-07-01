@@ -3,13 +3,7 @@
 
 use std::path::PathBuf;
 
-
-#[derive(
-    Debug,
-    Clone,
-    PartialEq,
-    Eq,
-)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum KernelArtifact {
     /// The symbol is linked into the current
     /// executable or shared runtime library.

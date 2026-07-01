@@ -25,7 +25,10 @@ impl fmt::Display for KernelRuntimeError {
                 "no runtime function is registered for kernel '{kernel}'"
             ),
             Self::RuntimeFailure { kernel, status } => {
-                write!(formatter, "kernel '{kernel}' returned error status {status}")
+                write!(
+                    formatter,
+                    "kernel '{kernel}' returned error status {status}"
+                )
             }
         }
     }
@@ -136,7 +139,10 @@ impl fmt::Display for RuntimeError {
                 "buffer for resource {resource:?} at address {address:#x} is not aligned to {required} bytes"
             ),
             Self::MissingAllocator(memory_space) => {
-                write!(formatter, "no allocator supports memory space {memory_space:?}")
+                write!(
+                    formatter,
+                    "no allocator supports memory space {memory_space:?}"
+                )
             }
             Self::AllocationFailed {
                 memory_space,

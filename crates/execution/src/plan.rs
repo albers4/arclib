@@ -2,9 +2,8 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
 use crate::{
-    ExecutionGraph, ExecutionPlanError, ExecutionSchedule, MemoryPlan,
-    MemoryPlanningError, ResourceDeclaration, ResourceTable,
-    plan_execution_schedule_memory,
+    ExecutionGraph, ExecutionPlanError, ExecutionSchedule, MemoryPlan, MemoryPlanningError,
+    ResourceDeclaration, ResourceTable, plan_execution_schedule_memory,
 };
 
 #[derive(Debug, Clone)]
@@ -56,9 +55,7 @@ impl ExecutionPlan {
         &self.memory
     }
 
-    pub fn into_parts(
-        self,
-    ) -> (ResourceTable, ExecutionGraph, ExecutionSchedule, MemoryPlan) {
+    pub fn into_parts(self) -> (ResourceTable, ExecutionGraph, ExecutionSchedule, MemoryPlan) {
         (self.resources, self.graph, self.schedule, self.memory)
     }
 }

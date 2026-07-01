@@ -92,11 +92,7 @@ pub struct BufferFill {
 }
 
 impl BufferFill {
-    pub fn new(
-        destination: ResourceId,
-        value: u8,
-        bytes: usize,
-    ) -> Result<Self, ExecutionError> {
+    pub fn new(destination: ResourceId, value: u8, bytes: usize) -> Result<Self, ExecutionError> {
         if bytes == 0 {
             return Err(ExecutionError::InvalidByteCount {
                 command: "buffer fill",

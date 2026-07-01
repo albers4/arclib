@@ -4,8 +4,7 @@
 use std::{collections::HashMap, ffi::c_void};
 
 use execution::{
-    BufferSpec, MemorySpace, ResourceDeclaration, ResourceId, ResourceTable,
-    ScalarValue,
+    BufferSpec, MemorySpace, ResourceDeclaration, ResourceId, ResourceTable, ScalarValue,
 };
 use kernel::{KernelBackend, KernelValueKind};
 

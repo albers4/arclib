@@ -5,8 +5,8 @@ use std::collections::HashMap;
 
 use crate::memory::{MemorySlotBuilder, new_slot_id};
 use crate::{
-    BufferLifetime, BufferProvision, BufferRequest, BufferSpec, ExecutionGraph,
-    ExecutionSchedule, MemoryPlan, MemoryPlanningError, ResourceId, ResourceTable,
+    BufferLifetime, BufferProvision, BufferRequest, BufferSpec, ExecutionGraph, ExecutionSchedule,
+    MemoryPlan, MemoryPlanningError, ResourceId, ResourceTable,
 };
 
 pub fn plan_memory(
@@ -15,12 +15,13 @@ pub fn plan_memory(
     let mut requests: Vec<_> = requests.into_iter().collect();
 
     for request in &requests {
-        request.spec().validate().map_err(|message| {
-            MemoryPlanningError::InvalidBufferSpec {
+        request
+            .spec()
+            .validate()
+            .map_err(|message| MemoryPlanningError::InvalidBufferSpec {
                 resource: request.resource(),
                 message,
-            }
-        })?;
+            })?;
 
         let lifetime = request.lifetime();
         if lifetime.first_use() > lifetime.last_use() {
@@ -59,8 +60,7 @@ pub fn plan_memory(
             let slot = &mut slots[index];
             let bytes = slot.spec.bytes().max(request.spec().bytes());
             let alignment = slot.spec.alignment().max(request.spec().alignment());
-            slot.spec = BufferSpec::new(bytes, slot.spec.memory_space())
-                .with_alignment(alignment);
+            slot.spec = BufferSpec::new(bytes, slot.spec.memory_space()).with_alignment(alignment);
             slot.available_after = lifetime.last_use();
             slot.resources.push(request.resource());
             index
@@ -139,8 +139,7 @@ pub fn plan_execution_schedule_memory(
 #[cfg(test)]
 mod tests {
     use crate::{
-        BufferLifetime, BufferRequest, BufferSpec, MemorySpace, ResourceTable,
-        plan_memory,
+        BufferLifetime, BufferRequest, BufferSpec, MemorySpace, ResourceTable, plan_memory,
     };
 
     #[test]

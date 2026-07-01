@@ -260,9 +260,7 @@ impl ExecutionGraphBuilder {
         let mut dependencies: HashSet<_> = explicit_dependencies.into_iter().collect();
 
         if matches!(&command, ExecutionCommand::Barrier) {
-            dependencies.extend(
-                (0..self.graph.nodes.len()).map(ExecutionNodeId::from_index),
-            );
+            dependencies.extend((0..self.graph.nodes.len()).map(ExecutionNodeId::from_index));
         } else {
             if let Some(barrier) = self.last_barrier {
                 dependencies.insert(barrier);

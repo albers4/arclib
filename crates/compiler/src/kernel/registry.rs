@@ -1,22 +1,13 @@
 // Copyright (c) 2026 ARC (Applied Research & Computation)
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-use std::{
-    collections::HashMap,
-    sync::Arc,
-};
+use std::{collections::HashMap, sync::Arc};
 
-use kernel::{
-    KernelDescriptor,
-    KernelError,
-};
+use kernel::{KernelDescriptor, KernelError};
 
 use crate::{CapabilityRequirement, CustomKernelPattern, KernelBackendRequirement, TargetProfile};
 
-
-impl KernelRegistration {
-
-}
+impl KernelRegistration {}
 
 pub struct KernelRegistration {
     descriptor: Arc<KernelDescriptor>,
@@ -25,70 +16,41 @@ pub struct KernelRegistration {
 }
 
 impl KernelRegistration {
-
-    pub fn requires(
-        mut self,
-        requirement:
-            CapabilityRequirement,
-    ) -> Self {
-        self.requirements.push(
-            requirement,
-        );
+    pub fn requires(mut self, requirement: CapabilityRequirement) -> Self {
+        self.requirements.push(requirement);
 
         self
     }
 
-    pub fn descriptor(
-        &self,
-    ) -> &Arc<KernelDescriptor> {
+    pub fn descriptor(&self) -> &Arc<KernelDescriptor> {
         &self.descriptor
     }
 
-    pub fn requirements(
-        &self,
-    ) -> &[
-        CapabilityRequirement
-    ] {
+    pub fn requirements(&self) -> &[CapabilityRequirement] {
         &self.requirements
     }
 
-    pub fn supports(
-        &self,
-        target:
-            Option<&TargetProfile>,
-    ) -> bool {
+    pub fn supports(&self, target: Option<&TargetProfile>) -> bool {
         self.descriptor
             .backend()
             .implicit_requirement()
             .is_satisfied_by(target)
-            && self.requirements
+            && self
+                .requirements
                 .iter()
-                .all(
-                    |requirement| {
-                        requirement
-                            .is_satisfied_by(
-                                target,
-                            )
-                    },
-                )
+                .all(|requirement| requirement.is_satisfied_by(target))
     }
 
-    pub fn pattern(
-        &self,
-    ) -> &Arc<
-        dyn CustomKernelPattern,
-    > {
+    pub fn pattern(&self) -> &Arc<dyn CustomKernelPattern> {
         &self.pattern
     }
 }
 
 #[derive(Default)]
 pub struct KernelRegistry {
-    by_name:
-        HashMap<String, usize>,
+    by_name: HashMap<String, usize>,
 
-    registrations:
-        Vec<KernelRegistration>,
+    registrations: Vec<KernelRegistration>,
 }
 
 impl KernelRegistry {
@@ -96,83 +58,38 @@ impl KernelRegistry {
         Self::default()
     }
 
-    pub fn register(
-        &mut self,
-        registration: KernelRegistration
-    ) -> Result<(), KernelError>
-    {
+    pub fn register(&mut self, registration: KernelRegistration) -> Result<(), KernelError> {
         let descriptor = registration.descriptor();
-        
+
         descriptor
             .validate()
-            .map_err(|message| {
-                KernelError::
-                    InvalidDescriptor {
-                        kernel:
-                            descriptor
-                                .name()
-                                .to_owned(),
+            .map_err(|message| KernelError::InvalidDescriptor {
+                kernel: descriptor.name().to_owned(),
 
-                        message,
-                    }
+                message,
             })?;
 
-        if self.by_name
-            .contains_key(
-                descriptor.name(),
-            )
-        {
-            return Err(
-                KernelError::
-                    DuplicateKernel(
-                        descriptor
-                            .name()
-                            .to_owned(),
-                    ),
-            );
+        if self.by_name.contains_key(descriptor.name()) {
+            return Err(KernelError::DuplicateKernel(descriptor.name().to_owned()));
         }
 
-        let index =
-            self.registrations.len();
+        let index = self.registrations.len();
 
-        self.by_name.insert(
-            descriptor
-                .name()
-                .to_owned(),
-            index,
-        );
+        self.by_name.insert(descriptor.name().to_owned(), index);
 
-        self.registrations.push(
-            registration,
-        );
+        self.registrations.push(registration);
 
         Ok(())
     }
 
-    pub fn descriptor(
-        &self,
-        name: &str,
-    ) -> Option<
-        Arc<KernelDescriptor>,
-    > {
+    pub fn descriptor(&self, name: &str) -> Option<Arc<KernelDescriptor>> {
         self.by_name
             .get(name)
-            .and_then(|index| {
-                self.registrations
-                    .get(*index)
-            })
-            .map(|registration| {
-                registration
-                    .descriptor
-                    .clone()
-            })
+            .and_then(|index| self.registrations.get(*index))
+            .map(|registration| registration.descriptor.clone())
     }
 
-    pub fn registrations(
-        &self,
-    ) -> &[
-        KernelRegistration
-    ] {
+    pub fn registrations(&self) -> &[KernelRegistration] {
         &self.registrations
     }
 }

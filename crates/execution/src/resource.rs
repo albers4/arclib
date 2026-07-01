@@ -123,11 +123,15 @@ impl ResourceTable {
     }
 
     pub fn declare_buffer(&mut self, spec: BufferSpec) -> ResourceId {
-        self.declare(ResourceDeclaration::Buffer(BufferDeclaration::runtime(spec)))
+        self.declare(ResourceDeclaration::Buffer(BufferDeclaration::runtime(
+            spec,
+        )))
     }
 
     pub fn declare_external_buffer(&mut self, spec: BufferSpec) -> ResourceId {
-        self.declare(ResourceDeclaration::Buffer(BufferDeclaration::external(spec)))
+        self.declare(ResourceDeclaration::Buffer(BufferDeclaration::external(
+            spec,
+        )))
     }
 
     pub fn get(&self, id: ResourceId) -> Option<&ResourceDeclaration> {
@@ -150,9 +154,7 @@ impl ResourceTable {
         self.declarations.is_empty()
     }
 
-    pub fn iter(
-        &self,
-    ) -> impl ExactSizeIterator<Item = (ResourceId, &ResourceDeclaration)> {
+    pub fn iter(&self) -> impl ExactSizeIterator<Item = (ResourceId, &ResourceDeclaration)> {
         self.declarations
             .iter()
             .enumerate()

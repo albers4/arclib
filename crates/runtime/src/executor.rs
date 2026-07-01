@@ -3,13 +3,10 @@
 
 use std::{ffi::c_void, ptr};
 
-use execution::{
-    BufferCopy, BufferFill, ExecutionCommand, ExecutionPlan, MemorySpace,
-};
+use execution::{BufferCopy, BufferFill, ExecutionCommand, ExecutionPlan, MemorySpace};
 
 use crate::{
-    AllocatorRegistry, LinkedKernelRuntime, ResourceStore, RuntimeError,
-    materialize_execution_plan,
+    AllocatorRegistry, LinkedKernelRuntime, ResourceStore, RuntimeError, materialize_execution_plan,
 };
 
 pub struct LocalExecutor {
@@ -189,12 +186,11 @@ mod tests {
     use std::{ffi::c_void, mem::size_of, sync::Arc};
 
     use execution::{
-        BufferCopy, BufferFill, BufferSpec, ExecutionGraphBuilder, ExecutionPlan,
-        KernelInvocation, MemorySpace, ResourceTable, ScalarValue,
+        BufferCopy, BufferFill, BufferSpec, ExecutionGraphBuilder, ExecutionPlan, KernelInvocation,
+        MemorySpace, ResourceTable, ScalarValue,
     };
     use kernel::{
-        KernelAbi, KernelAccess, KernelBackend, KernelDescriptor, KernelParameter,
-        KernelValueKind,
+        KernelAbi, KernelAccess, KernelBackend, KernelDescriptor, KernelParameter, KernelValueKind,
     };
 
     use crate::LocalExecutor;
@@ -214,12 +210,7 @@ mod tests {
     #[test]
     fn executes_kernel_command() {
         let descriptor = Arc::new(
-            KernelDescriptor::new(
-                "test.increment",
-                "increment_f64",
-                KernelBackend::Cpu,
-            )
-            .with_abi(
+            KernelDescriptor::new("test.increment", "increment_f64", KernelBackend::Cpu).with_abi(
                 KernelAbi::new()
                     .parameter(KernelParameter::new(
                         "value",
@@ -252,8 +243,7 @@ mod tests {
     fn executes_fill_and_copy_commands() {
         let mut resources = ResourceTable::new();
         let source = resources.declare_buffer(BufferSpec::new(8, MemorySpace::Host));
-        let destination =
-            resources.declare_buffer(BufferSpec::new(8, MemorySpace::Host));
+        let destination = resources.declare_buffer(BufferSpec::new(8, MemorySpace::Host));
 
         let mut graph = ExecutionGraphBuilder::new();
         graph
@@ -267,9 +257,8 @@ mod tests {
         let executor = LocalExecutor::new();
         let store = executor.run(&plan).unwrap();
         let output = store.buffer(destination).unwrap();
-        let bytes = unsafe {
-            std::slice::from_raw_parts(output.pointer().as_ptr().cast::<u8>(), 8)
-        };
+        let bytes =
+            unsafe { std::slice::from_raw_parts(output.pointer().as_ptr().cast::<u8>(), 8) };
         assert_eq!(bytes, &[0x2a; 8]);
         assert!(output.bytes() >= size_of::<u64>());
     }

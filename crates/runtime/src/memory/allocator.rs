@@ -83,9 +83,7 @@ impl BufferAllocator for HostAllocator {
     }
 }
 
-type AllocateCallback = Arc<
-    dyn Fn(&BufferSpec) -> Result<NonNull<c_void>, String> + Send + Sync,
->;
+type AllocateCallback = Arc<dyn Fn(&BufferSpec) -> Result<NonNull<c_void>, String> + Send + Sync>;
 type FreeCallback = Arc<dyn Fn(NonNull<c_void>, &BufferSpec) + Send + Sync>;
 
 pub struct CallbackAllocator {
@@ -162,19 +160,19 @@ impl BufferAllocator for CallbackAllocator {
     }
 
     fn allocate(&self, spec: &BufferSpec) -> Result<BufferBinding, RuntimeError> {
-        let pointer = (self.allocate)(spec).map_err(|message| {
-            RuntimeError::AllocationFailed {
-                memory_space: spec.memory_space(),
-                bytes: spec.bytes(),
-                message,
-            }
+        let pointer = (self.allocate)(spec).map_err(|message| RuntimeError::AllocationFailed {
+            memory_space: spec.memory_space(),
+            bytes: spec.bytes(),
+            message,
         })?;
 
-        Ok(BufferBinding::from_allocation(Arc::new(CallbackAllocation {
-            pointer,
-            spec: spec.clone(),
-            free: self.free.clone(),
-        })))
+        Ok(BufferBinding::from_allocation(Arc::new(
+            CallbackAllocation {
+                pointer,
+                spec: spec.clone(),
+                free: self.free.clone(),
+            },
+        )))
     }
 }
 

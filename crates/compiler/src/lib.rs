@@ -5,6 +5,7 @@ mod analysis;
 mod conversion;
 mod diagnostic;
 mod extension;
+mod kernel;
 mod pass;
 mod passes;
 mod planning;
@@ -13,7 +14,6 @@ mod registry;
 mod request;
 mod session;
 mod target;
-mod kernel;
 
 pub use pass::{
     NoopInstrumentation, Pass, PassContext, PassError, PassFailure, PassInstrumentation,
@@ -59,34 +59,12 @@ pub use planning::{
 pub use target::{CapabilityRequirement, TargetProfile, predicate_matches};
 
 pub use kernel::{
-    KERNEL_BACKEND_ATTRIBUTE,
-    KERNEL_CALL_OPERATION,
-    KERNEL_DIALECT,
-    KERNEL_NAME_ATTRIBUTE,
-    KERNEL_PARAMETER_COUNT_ATTRIBUTE,
-    KERNEL_SYMBOL_ATTRIBUTE,
-    KERNEL_RESULT_ALIAS_PREFIX,
-    KERNEL_RESULT_COUNT_ATTRIBUTE,
-    KernelCallInterface,
-    KernelCallOp,
-    register_kernel_dialect,
-
-    KernelCompilerExtension,
-    SELECT_CUSTOM_KERNELS_PIPELINE,
-
-    SELECT_CUSTOM_KERNELS_PASS,
-    SelectCustomKernelsPass,
-
-    CustomKernelPattern,
-    KernelPatternRewriter,
-    KernelPatternAdapter,
-
-    KernelRegistration,
-    KernelRegistry,
-
-    KernelBackendRequirement,
-
-    KernelError,
+    CustomKernelPattern, KERNEL_BACKEND_ATTRIBUTE, KERNEL_CALL_OPERATION, KERNEL_DIALECT,
+    KERNEL_NAME_ATTRIBUTE, KERNEL_PARAMETER_COUNT_ATTRIBUTE, KERNEL_RESULT_ALIAS_PREFIX,
+    KERNEL_RESULT_COUNT_ATTRIBUTE, KERNEL_SYMBOL_ATTRIBUTE, KernelBackendRequirement,
+    KernelCallInterface, KernelCallOp, KernelCompilerExtension, KernelError, KernelPatternAdapter,
+    KernelPatternRewriter, KernelRegistration, KernelRegistry, SELECT_CUSTOM_KERNELS_PASS,
+    SELECT_CUSTOM_KERNELS_PIPELINE, SelectCustomKernelsPass, register_kernel_dialect,
 };
 
 #[cfg(test)]
