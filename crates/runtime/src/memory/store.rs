@@ -272,6 +272,16 @@ fn validate_memory_space(
                 })
             }
         }
+        KernelBackend::CpuOpenMp => {
+            if matches!(memory_space, MemorySpace::Host | MemorySpace::Unified) {
+                Ok(())
+            } else {
+                Err(RuntimeError::UnsupportedMemorySpace {
+                    backend,
+                    memory_space,
+                })
+            }
+        }
         KernelBackend::Cuda => match memory_space {
             MemorySpace::Unified => Ok(()),
             MemorySpace::CudaDevice { ordinal } => {
