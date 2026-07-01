@@ -1,66 +1,58 @@
 // Copyright (c) 2026 ARC (Applied Research & Computation)
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-use crate::{
-    analysis::AnalysisManager,
-    pass::{Pass, PassContext, PassError},
-};
-
-use ir::{GreedyRewriteConfig, Module, RewritePatternSet, apply_patterns_greedily};
-
-pub struct GreedyRewritePass {
-    name: &'static str,
-    patterns: RewritePatternSet,
-    config: GreedyRewriteConfig,
-}
-
-impl GreedyRewritePass {
-    pub fn new(name: &'static str, patterns: RewritePatternSet) -> Self {
-        Self {
-            name,
-            patterns,
-            config: GreedyRewriteConfig::default(),
-        }
-    }
-
-    pub fn with_config(mut self, config: GreedyRewriteConfig) -> Self {
-        self.config = config;
-        self
-    }
-}
-
-impl Pass for GreedyRewritePass {
-    fn name(&self) -> &'static str {
-        self.name
-    }
-
-    fn run(
-        &self,
-        module: &mut Module,
-        context: &mut PassContext,
-        _analyses: &mut AnalysisManager,
-    ) -> Result<(), PassError> {
-        let report = apply_patterns_greedily(module, &self.patterns, &self.config)
-            .map_err(|error| PassError::failed(self.name(), error.to_string()))?;
-
-        if report.rewrites > 0 {
-            context.mark_changed();
-        }
-
-        Ok(())
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use ir::{
-        Attribute, Module, OperationBuilder, OperationId, PatternBenefit, PatternResult,
-        PatternRewriter, RewriteError, RewritePattern, RewritePatternSet,
+        Attribute, GreedyRewriteConfig, Module, OperationBuilder, OperationId, PatternBenefit,
+        PatternResult, PatternRewriter, RewriteError, RewritePattern, RewritePatternSet,
+        apply_patterns_greedily,
     };
 
-    use crate::{AnalysisManager, Pass, PassContext};
+    use crate::{AnalysisManager, Pass, PassContext, PassError};
 
-    use super::GreedyRewritePass;
+    pub struct GreedyRewritePass {
+        name: &'static str,
+        patterns: RewritePatternSet,
+        config: GreedyRewriteConfig,
+    }
+
+    impl GreedyRewritePass {
+        pub fn new(name: &'static str, patterns: RewritePatternSet) -> Self {
+            Self {
+                name,
+                patterns,
+                config: GreedyRewriteConfig::default(),
+            }
+        }
+
+        pub fn with_config(mut self, config: GreedyRewriteConfig) -> Self {
+            self.config = config;
+            self
+        }
+    }
+
+    impl Pass for GreedyRewritePass {
+        fn name(&self) -> &'static str {
+            self.name
+        }
+
+        fn run(
+            &self,
+            module: &mut Module,
+            context: &mut PassContext,
+            _analyses: &mut AnalysisManager,
+        ) -> Result<(), PassError> {
+            let report = apply_patterns_greedily(module, &self.patterns, &self.config)
+                .map_err(|error| PassError::failed(self.name(), error.to_string()))?;
+
+            if report.rewrites > 0 {
+                context.mark_changed();
+            }
+
+            Ok(())
+        }
+    }
 
     struct AddFirstMarker;
 
@@ -139,7 +131,12 @@ mod tests {
 
         patterns.add("test.operation", PatternBenefit::new(10), AddFirstMarker);
 
-        let pass = GreedyRewritePass::new("test.greedy-rewrite", patterns);
+        let pass = GreedyRewritePass::new("test.greedy-rewrite", patterns).with_config(
+            GreedyRewriteConfig {
+                max_iterations: 64,
+                max_rewrites: 1_000_000,
+            },
+        );
 
         let mut context = PassContext::default();
 

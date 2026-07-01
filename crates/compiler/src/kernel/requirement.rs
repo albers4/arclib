@@ -12,8 +12,8 @@ pub trait KernelBackendRequirement {
 impl KernelBackendRequirement for KernelBackend {
     fn implicit_requirement(self) -> CapabilityRequirement {
         match self {
-            Self::Cpu => CapabilityRequirement::equals("backend.openmp", true),
-
+            Self::Cpu => CapabilityRequirement::equals("backend.cpu", true),
+            Self::CpuOpenMp => CapabilityRequirement::equals("backend.cpu_openmp", true),
             Self::Cuda => CapabilityRequirement::equals("backend.cuda", true),
         }
     }
