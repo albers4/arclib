@@ -5,8 +5,13 @@ members = [
     "crates/compiler",
     "crates/execution",
     "crates/kernel",
+    "crates/operator",
+    "crates/equation",
+    "crates/domain",
+    "crates/mesh",
     "crates/runtime",
     "crates/method",
+    "crates/methods/continuum/finite-volume",
     "python",
 ]
 
