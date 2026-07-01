@@ -3,6 +3,9 @@ resolver = "2"
 members = [
     "crates/ir",
     "crates/compiler",
+    "crates/execution",
+    "crates/kernel",
+    "crates/runtime",
     "python",
 ]
 
