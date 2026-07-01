@@ -20,6 +20,6 @@ pub use memory::{
 };
 pub use plan::ExecutionPlan;
 pub use resource::{
-    BufferDeclaration, BufferProvision, MemorySpace, ResourceDeclaration, ResourceId,
-    ResourceTable, ScalarValue,
+    BufferDeclaration, BufferPersistence, BufferProvision, MemorySpace, ResourceDeclaration,
+    ResourceId, ResourceTable, ScalarValue,
 };

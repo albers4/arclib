@@ -5,8 +5,8 @@ use std::collections::HashMap;
 
 use crate::memory::{MemorySlotBuilder, new_slot_id};
 use crate::{
-    BufferLifetime, BufferProvision, BufferRequest, BufferSpec, ExecutionGraph, ExecutionSchedule,
-    MemoryPlan, MemoryPlanningError, ResourceId, ResourceTable,
+    BufferLifetime, BufferPersistence, BufferProvision, BufferRequest, BufferSpec, ExecutionGraph,
+    ExecutionSchedule, MemoryPlan, MemoryPlanningError, ResourceId, ResourceTable,
 };
 
 pub fn plan_memory(
@@ -97,7 +97,20 @@ pub fn plan_execution_schedule_memory(
     schedule: &ExecutionSchedule,
     resources: &ResourceTable,
 ) -> Result<MemoryPlan, MemoryPlanningError> {
+    let final_position = schedule.order().len().saturating_sub(1);
     let mut lifetimes: HashMap<ResourceId, BufferLifetime> = HashMap::new();
+
+    for (resource, decleration) in resources.iter() {
+        let Some(buffer) = decleration.buffer() else {
+            continue;
+        };
+
+        if buffer.provision() == BufferProvision::Runtime
+            && buffer.persistence() == BufferPersistence::Persistent
+        {
+            lifetimes.insert(resource, BufferLifetime::new(0, final_position));
+        }
+    }
 
     for (position, node_id) in schedule.order().iter().copied().enumerate() {
         let command = graph
@@ -108,7 +121,9 @@ pub fn plan_execution_schedule_memory(
             let Some(buffer) = resources.buffer(resource) else {
                 continue;
             };
-            if buffer.provision() != BufferProvision::Runtime {
+            if buffer.provision() != BufferProvision::Runtime
+                || buffer.persistence() == BufferPersistence::Persistent
+            {
                 continue;
             }
 

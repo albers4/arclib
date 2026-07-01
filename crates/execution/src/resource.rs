@@ -50,10 +50,17 @@ pub enum BufferProvision {
     External,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum BufferPersistence {
+    Transient,
+    Persistent,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BufferDeclaration {
     spec: BufferSpec,
     provision: BufferProvision,
+    persistence: BufferPersistence,
 }
 
 impl BufferDeclaration {
@@ -61,6 +68,15 @@ impl BufferDeclaration {
         Self {
             spec,
             provision: BufferProvision::Runtime,
+            persistence: BufferPersistence::Transient,
+        }
+    }
+
+    pub fn runtime_persistent(spec: BufferSpec) -> Self {
+        Self {
+            spec,
+            provision: BufferProvision::Runtime,
+            persistence: BufferPersistence::Persistent,
         }
     }
 
@@ -68,6 +84,7 @@ impl BufferDeclaration {
         Self {
             spec,
             provision: BufferProvision::External,
+            persistence: BufferPersistence::Persistent,
         }
     }
 
@@ -77,6 +94,10 @@ impl BufferDeclaration {
 
     pub const fn provision(&self) -> BufferProvision {
         self.provision
+    }
+
+    pub const fn persistence(&self) -> BufferPersistence {
+        self.persistence
     }
 }
 
@@ -132,6 +153,12 @@ impl ResourceTable {
         self.declare(ResourceDeclaration::Buffer(BufferDeclaration::external(
             spec,
         )))
+    }
+
+    pub fn declare_persistent_buffer(&mut self, spec: BufferSpec) -> ResourceId {
+        self.declare(ResourceDeclaration::Buffer(
+            BufferDeclaration::runtime_persistent(spec),
+        ))
     }
 
     pub fn get(&self, id: ResourceId) -> Option<&ResourceDeclaration> {
