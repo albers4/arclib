@@ -1,0 +1,27 @@
+[package]
+name = "finite-volume"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+build = "build.rs"
+
+[dependencies]
+ir = { path = "../../../ir" }
+compiler = { path = "../../../compiler" }
+method = { path = "../../../method" }
+domain = { path = "../../../domain" }
+mesh = { path = "../../../mesh" }
+operator = { path = "../../../operator" }
+equation = { path = "../../../equation" }
+kernel = { path = "../../../kernel" }
+execution = { path = "../../../execution" }
+runtime = { path = "../../../runtime" }
+
+[build-dependencies]
+cc = "1"
+
+[[example]]
+name = "diffusion_1d"
+
+[[example]]
+name = "diffusion_1d_native"
