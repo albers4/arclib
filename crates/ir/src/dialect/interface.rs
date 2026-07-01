@@ -45,7 +45,7 @@ impl InterfaceMap {
 }
 
 pub trait OperationVerifier: Send + Sync {
-    fn verify(&self, operation: OperationRef<'_>) -> Result<(), String>;
+    fn verify<'a>(&self, operation: OperationRef<'a>) -> Result<(), String>;
 }
 
 impl<F> OperationVerifier for F
